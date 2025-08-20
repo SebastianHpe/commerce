@@ -3,5 +3,10 @@ body {
 }
 
 .form-control {
-  max-width: 620px ;  /* or whatever size you prefer */
+  max-width: 620px ;
+}
+
+.card-title a {
+    text-decoration: none;
+    color: inherit;
 }

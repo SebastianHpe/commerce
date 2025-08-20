@@ -20,7 +20,7 @@
                     <div class="flex-grow-1">
                         <div class="card-body">
                             <h5 class="card-title">
-                                <a href="{% url 'listing_detail' listing.id %}">{{ listing.title }}</a>
+                                <a href="{% url 'listing_detail' listing.id %}" class="link-no-style">{{ listing.title }}</a>
                             </h5>
                             <p class="card-text text-success fw-bold" style="font-size: 1.5rem;">
                                 ${{ listing.starting_bid }}
