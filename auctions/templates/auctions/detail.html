@@ -46,6 +46,33 @@
             <li>Category: {{ listing.category }}</li>
             <li>Posted: {{ listing.date_posted|date:"M d, Y" }}</li>
         </ul>
+        {% if listing.author == request.user %}
+        <!-- Delete button triggers modal -->
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+            Delete Listing
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete "{{ listing.title }}"?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{% url 'delete_listing' listing.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Yes, delete</button>
+                    </form>
+                </div>
+            </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
 {% endblock %}

@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import IntegrityError
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
@@ -122,3 +122,15 @@ def listing_detail(request, id):
             "listing": listing,
         },
     )
+
+@login_required
+def delete_listing(request, id):
+    listing = get_object_or_404(Listing, id=id)
+
+    if listing.author != request.user:
+        return HttpResponseForbidden("Only the author of a listing can delete it.")
+    
+    if request.method == "POST":
+        listing.delete()
+        return HttpResponseRedirect(reverse("index"))
+    
