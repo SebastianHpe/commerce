@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from .forms import NewListingForm, NewBidForm
@@ -24,7 +24,10 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return redirect(request.POST.get("next", "/"))
+            next_url = request.POST.get("next")
+            if next_url:
+                return redirect(next_url)
+            return redirect("index")
         else:
             return render(
                 request,
@@ -97,7 +100,7 @@ def create(request):
 
 @login_required
 def listing_detail(request, id):
-    listing = Listing.objects.get(id=id)
+    listing = get_object_or_404(Listing, id=id)
 
     if request.method == "POST":
         form = NewBidForm(request.POST, user=request.user, listing=listing)
