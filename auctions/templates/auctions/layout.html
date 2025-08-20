@@ -9,6 +9,12 @@
         <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
     </head>
     <body>
+        {% if messages %}
+            {% for message in messages%}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="{% url 'index' %}"><strong>eBuy Marketplace</strong></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,19 +34,14 @@
                 <div class="navbar-nav ml-auto">
                     {% if user.is_authenticated %}
                         <span class="navbar-text">Signed in as <a href="{% url 'my_listings' %}" style="text-decoration: none;"><strong>{{ user.username }}</strong></a></span>
-                        {% nav_link 'logout' 'Log Out' %}
+                        <a href="{% url 'logout' %}" class="btn btn-secondary ml-2">Log Out</a>
                     {% else %}
-                        {% nav_link 'login' 'Log In' %}
-                        {% nav_link 'register' 'Register' %}
+                        <a href="{% url 'login' %}" class="btn btn-primary ml-2">Log In</a>
+                        <a href="{% url 'register' %}" class="btn btn-secondary ml-2">Register</a>
                     {% endif %}
                 </div>
             </div>
         </nav>
-        {% if messages %}
-            {% for message in messages%}
-                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
 
         <hr>
         {% block body %}
