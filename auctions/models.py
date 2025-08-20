@@ -40,11 +40,16 @@ class Listing(models.Model):
         return self.bids.order_by("-price").first()
 
     @property
+    def highest_bidder(self) -> User:
+        return self.bids.order_by("-price").first().bidder
+    
+    @property
     def bid_count(self) -> int:
         return self.bids.count()
 
     def is_highest_bidder(self, user) -> bool:
         return self.highest_bid is not None and self.highest_bid.bidder == user
+    
 class Comment(models.Model):
     content = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)

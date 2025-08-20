@@ -16,10 +16,15 @@
 
         <p class="card-text">
             <small class="text-muted">{{ listing.bid_count }} bid(s) so far.
-                {% if listing.highest_bid and listing.highest_bid.bidder == request.user %}
-                    Your bid is the current bid.
-                {% else %}
-                    Your bid is not the current bid.
+                {% if listing.highest_bid %}
+                    {% if listing.highest_bid.bidder == request.user %}
+                        Your bid is the current bid.
+                    {% else %}
+                        Your bid is not the current bid.
+                    {% endif %}
+                    {% if request.user == listing.author %}
+                        The current highest bidder is {{ listing.highest_bidder }}
+                    {% endif %}
                 {% endif %}
             </small>
         </p>
@@ -47,29 +52,54 @@
             <li>Posted: {{ listing.date_posted|date:"M d, Y" }}</li>
         </ul>
         {% if listing.author == request.user %}
-        <!-- Delete button triggers modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#closeModal">
+            Close Listing
+        </button>
         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
             Delete Listing
         </button>
 
-        <!-- Modal -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <!-- Close Modal -->
+        <div class="modal fade" id="closeModal" tabindex="-1" aria-labelledby="closeModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete "{{ listing.title }}"?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form action="{% url 'delete_listing' listing.id %}" method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Yes, delete</button>
-                    </form>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Confirm Closing</h5>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to close "{{ listing.title }}"? 
+                        {% if listing.highest_bid %}
+                            The current highest bidder is {{ listing.highest_bidder }}.
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form action="{% url 'close_listing' listing.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary">Yes, close</button>
+                        </form>
+                    </div>
                 </div>
             </div>
+        </div>
+        <!-- Delete Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete "{{ listing.title }}"?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form action="{% url 'delete_listing' listing.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Yes, delete</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
         {% endif %}
