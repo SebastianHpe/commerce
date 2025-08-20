@@ -16,8 +16,9 @@
 
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
-                    <a class="nav-item nav-link active" href="{% url 'index' %}">Active Listings <span class="sr-only">(current)</span></a>
                     {% if user.is_authenticated %}
+                    <a class="nav-item nav-link" href="{% url 'closed_listings' %}">Closed Listings</a>
+                    <a class="nav-item nav-link" href="{% url 'won_listings' %}">Won Listings</a>
                     <a class="nav-item nav-link" href="{% url 'categories' %}">Categories</a>
                     <a class="nav-item nav-link" href="{% url 'watchlist' %}">Watchlist</a>
                     <a class="nav-item nav-link" href="{% url 'create' %}">Create Listing</a>

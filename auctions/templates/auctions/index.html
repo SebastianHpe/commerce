@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>{{ title }}</h2>
 
         {% for listing in listings %}
             <div class="card mb-4" style="max-width: 1200px;">

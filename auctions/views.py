@@ -11,8 +11,24 @@ from .models import User, Listing
 
 
 def index(request):
-    return render(request, "auctions/index.html", {"listings": Listing.objects.filter(status=Listing.Status.ACTIVE)})
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.filter(status=Listing.Status.ACTIVE),
+        "title": "Active Listings",
+        })
 
+@login_required 
+def closed_listings(request):
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.filter(status=Listing.Status.CLOSED).filter(author=request.user),
+        "title": "My Closed Listings",
+        })
+
+@login_required 
+def won_listings(request):
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.filter(status=Listing.Status.CLOSED).filter(winner=request.user),
+        "title": "My Won Listings",
+        })
 
 def login_view(request):
     if request.method == "POST":
