@@ -27,7 +27,7 @@
                 </div>
                 <div class="navbar-nav ml-auto">
                     {% if user.is_authenticated %}
-                        <span class="navbar-text">Signed in as <strong>{{ user.username }}</strong></span>
+                        <span class="navbar-text">Signed in as <a href="{% url 'my_listings' %}" style="text-decoration: none;"><strong>{{ user.username }}</strong></a></span>
                         {% nav_link 'logout' 'Log Out' %}
                     {% else %}
                         {% nav_link 'login' 'Log In' %}

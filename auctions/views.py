@@ -30,6 +30,13 @@ def won_listings(request):
         "title": "My Won Listings",
         })
 
+@login_required 
+def my_listings(request):
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.filter(status=Listing.Status.ACTIVE).filter(author=request.user),
+        "title": "My Listings",
+        })
+
 def login_view(request):
     if request.method == "POST":
         # Attempt to sign user in
