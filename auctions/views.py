@@ -11,7 +11,7 @@ from .models import User, Listing
 
 
 def index(request):
-    return render(request, "auctions/index.html", {"listings": Listing.objects.all()})
+    return render(request, "auctions/index.html", {"listings": Listing.objects.filter(status=Listing.Status.ACTIVE)})
 
 
 def login_view(request):
@@ -132,5 +132,19 @@ def delete_listing(request, id):
     
     if request.method == "POST":
         listing.delete()
+        messages.info(request, "Listing was deleted!")
         return HttpResponseRedirect(reverse("index"))
     
+@login_required
+def close_listing(request, id):
+    listing = get_object_or_404(Listing, id=id)
+
+    if listing.author != request.user:
+        return HttpResponseForbidden("Only the author of a listing can close it.")
+    
+    if request.method == "POST":
+        listing.status = 1
+        listing.winner = listing.highest_bidder
+        listing.save()
+        messages.info(request, "Listing was closed!")
+        return HttpResponseRedirect(reverse("index"))
