@@ -5,15 +5,16 @@
 
 {% block body %}
     <div class="card mb-4" style="max-width: 1200px;">
-        <h1>{{ listing.title }}</a></h1>
+        <h1>{{ listing.title }} {% if listing.status == 1 %}(Deactivated){% endif %}</h1>
 
         {% if listing.image %}
-            <img src="{{ listing.image.url }}" class="img-fluid" style="max-height:500px; object-fit:contain;" alt="{{ listing.title }}">
+            <img src="{{ listing.image.url }}" class="img-fluid" style="max-height:500px; object-fit:scale-down;" alt="{{ listing.title }}">
         {% else %}
-            <img src="{% static 'auctions/default.png' %}" class="img-fluid" style="max-height:260px; object-fit:contain;" alt="No image">
+            <img src="{% static 'auctions/default.png' %}" class="img-fluid" style="max-height:260px; object-fit:scale-down;" alt="No image">
         {% endif %}
         <p class="card-text">{{ listing.description|truncatewords:80 }}</p>
 
+        {% if listing.status == 0 %}
         <p class="card-text">
             <small class="text-muted">{{ listing.bid_count }} bid(s) so far.
                 {% if listing.highest_bid %}
@@ -45,18 +46,18 @@
             {{ form.price|as_crispy_field }}
             <button type="submit">Place Bid</button>
         </form>
+        {% endif %}
         <h2>Details</h2>
         <ul>
             <li>Listed by {{ listing.author }}</li>
             <li>Category: {{ listing.category }}</li>
             <li>Posted: {{ listing.date_posted|date:"M d, Y" }}</li>
         </ul>
+
         {% if listing.author == request.user %}
+        {% if listing.status == 0 %}
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#closeModal">
             Close Listing
-        </button>
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-            Delete Listing
         </button>
 
         <!-- Close Modal -->
@@ -82,6 +83,11 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+            Delete Listing
+        </button>
+
         <!-- Delete Modal -->
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog">
