@@ -132,3 +132,5 @@ MEDIA_ROOT = BASE_DIR / "media"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 LOGIN_URL = '/login/'
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
