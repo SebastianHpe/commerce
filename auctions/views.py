@@ -151,6 +151,9 @@ def listing_detail(request, id):
     listing = get_object_or_404(Listing, id=id)
     comments = Comment.objects.filter(listing=listing).order_by("-date_posted")
 
+    bid_form = NewBidForm(user=request.user, listing=listing)
+    comment_form = NewCommentForm()
+    
     if request.method == "POST":
         if "submit_bid" in request.POST: 
             bid_form = NewBidForm(request.POST, user=request.user, listing=listing)
@@ -160,6 +163,7 @@ def listing_detail(request, id):
                 new_bid.listing = listing
                 new_bid.save()
                 messages.success(request, "Bid successful!")     
+                return HttpResponseRedirect(reverse("listing_detail", args=[id]))
             
         elif "submit_comment" in request.POST:
             comment_form = NewCommentForm(request.POST)
@@ -169,11 +173,10 @@ def listing_detail(request, id):
                 new_comment.listing = listing
                 new_comment.save()
                 messages.success(request, "Comment added.")
-        return HttpResponseRedirect(reverse("listing_detail", args=[id]))
+                return HttpResponseRedirect(reverse("listing_detail", args=[id]))
     
-    else:
-        bid_form = NewBidForm(user=request.user, listing=listing)
-        comment_form = NewCommentForm()
+    # else:
+        
 
     return render(
         request,
