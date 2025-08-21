@@ -48,6 +48,21 @@
     <!-- Description -->
     <p class="card-text">{{ listing.description|truncatewords:80 }}</p>
 
+    <p class="card-text">
+        <small class="text-muted">{{ listing.bid_count }} bid(s) so far.
+            {% if listing.highest_bid %}
+            {% if listing.highest_bid.bidder == request.user %}
+            Your bid is the current bid.
+            {% else %}
+            Your bid is not the current bid.
+            {% endif %}
+            {% if request.user == listing.author %}
+            The current highest bidder is {{ listing.highest_bidder }}
+            {% endif %}
+            {% endif %}
+        </small>
+    </p>
+    
     <!-- Bids -->
     {% if listing.status == 0 %}
     <div class="d-flex align-items-center mb-3 gap-3 flex-wrap">
