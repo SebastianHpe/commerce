@@ -4,8 +4,22 @@
 
 
 {% block body %}
-    <div class="card mb-4" style="max-width: 1200px;">
-        <h1>{{ listing.title }} {% if listing.status == 1 %}(Deactivated){% endif %}</h1>
+    <div class="card" style="max-width: 1200px;">
+        <h1 class="mb-0">
+            {{ listing.title }}
+            {% if listing.status == 1 %}
+                (Deactivated)
+                {% if listing.winner == request.user %}
+                    - You won this auction!
+                {% endif %}
+            {% endif %}
+        </h1>
+
+        {% if listing.status == 1 %}
+        <div>
+            <span class="badge bg-success text-light d-inline-block ml-2" style="width: 80px;">Sold</span>
+        </div>
+        {% endif %}
 
         {% if listing.image %}
             <img src="{{ listing.image.url }}" class="img-fluid" style="max-height:500px; object-fit:scale-down;" alt="{{ listing.title }}">
