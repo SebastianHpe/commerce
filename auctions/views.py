@@ -123,7 +123,7 @@ def watchlist(request):
 
         return redirect("listing_detail", id=listing.id)
     
-    return render(request, "auctions/watchlist.html", {
+    return render(request, "auctions/index.html", {
         "listings": user.watchlist.all(),
         "title": "My Watchlist",
         })

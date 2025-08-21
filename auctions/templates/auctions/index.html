@@ -16,7 +16,7 @@
                                     style="width: 80px; height: 18px; line-height: 1;">Sold</span>
                             {% endif %}
 
-                            {% if request.user in listing.watchers.all %}
+                            {% if request.user in listing.watchers.all and request.path != '/watchlist/' %}
                                 <span class="badge bg-secondary text-light d-flex justify-content-center align-items-center" 
                                     style="width: 80px; height: 18px; line-height: 1;">Watchlist</span>
                             {% endif %}
