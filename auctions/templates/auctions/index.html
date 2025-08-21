@@ -30,7 +30,7 @@
                     </div>
 
                     <!-- Text column -->
-                    <div class="flex-grow-1">
+                    <div style="flex:0 0 250px;" class="border-end">
                         <div class="card-body">
                             <h5 class="card-title">
                                 <a href="{% url 'listing_detail' listing.id %}" class="link-no-style">{{ listing.title }}</a>
@@ -45,8 +45,12 @@
                             <p class="card-text">
                                 <small class="text-muted">Posted: {{ listing.date_posted|date:"M d, Y" }}</small>
                             </p>
-                            <p class="card-text">{{ listing.description|truncatewords:80 }}</p>
+                            
                         </div>
+                    </div>
+                    <div class="flex-grow-1 p-3">
+                        <h6>Description:</h6>
+                        <p class="card-text">{{ listing.description|truncatewords:80 }}</p>
                     </div>
                 </div>
             </div>
