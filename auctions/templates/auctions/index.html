@@ -22,13 +22,11 @@
                             {% endif %}
                         </div>
                         <!-- Image -->
-                        {% if listing.image %}
-                            <img src="{{ listing.image.url }}" class="img-fluid" 
-                                style="max-height:230px; object-fit:contain;" alt="{{ listing.title }}">
-                        {% else %}
-                            <img src="{% static 'auctions/default.png' %}" class="img-fluid" 
-                                style="max-height:230px; object-fit:contain;" alt="No image">
-                        {% endif %}
+                        <a href="{% url 'listing_detail' listing.id %}">
+                            <img src="{% if listing.image %}{{ listing.image.url }}{% else %}{% static 'auctions/default.png' %}{% endif %}" 
+                                class="img-fluid" style="max-height:230px; object-fit:contain;" 
+                                alt="{{ listing.title|default:'No image' }}">
+                        </a>
                     </div>
 
                     <!-- Text column -->
