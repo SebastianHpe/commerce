@@ -23,10 +23,10 @@
 
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
+                    {% nav_link 'list_categories' 'Categories' %}
                     {% if user.is_authenticated %}
                         {% nav_link "closed_listings" "Closed Listings" %}
                         {% nav_link "won_listings" "Won Listings" %}
-                        {% nav_link 'categories' 'Categories' %}
                         {% nav_link 'watchlist' 'Watchlist' %}
                         {% nav_link 'create' 'Create Listing' %}
                     {% endif %}

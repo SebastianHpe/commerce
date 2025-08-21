@@ -11,7 +11,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
 class Listing(models.Model):
     class Status(models.IntegerChoices):
         ACTIVE = 0, "Active"

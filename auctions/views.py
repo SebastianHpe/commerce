@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from .forms import NewListingForm, NewBidForm
-from .models import User, Listing
+from .models import User, Listing, Category
 
 
 def index(request):
@@ -35,6 +35,12 @@ def my_listings(request):
     return render(request, "auctions/index.html", {
         "listings": Listing.objects.filter(status=Listing.Status.ACTIVE).filter(author=request.user),
         "title": "My Listings",
+        })
+
+def category(request, category):
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.filter(status=Listing.Status.ACTIVE).filter(category=Category.objects.get(name=category)),
+        "title": category,
         })
 
 def login_view(request):
@@ -96,8 +102,8 @@ def register(request):
         return render(request, "auctions/register.html")
 
 
-def categories(request):
-    return render(request, "auctions/categories.html")
+def list_categories(request):
+    return render(request, "auctions/categories.html", {"categories": Category.objects.all()})
 
 
 @login_required

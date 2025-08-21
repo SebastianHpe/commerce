@@ -2,6 +2,11 @@
 
 {% block body %}
     <h2>Listing Categories</h2>
-
-    TODO
+    <div class="col-4">
+        <div class="list-group" id="list-tab" role="tablist">
+        {% for category in categories %}
+            <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="{% url 'category' category.name %}" role="tab">{{ category.name }}</a>
+        {% endfor %}
+        </div>
+    </div>
 {% endblock %}
