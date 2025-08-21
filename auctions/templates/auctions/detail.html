@@ -2,11 +2,11 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-
 {% block body %}
-    <div class="card" style="max-width: 1200px;">
-        <div style="display: flex; justify-content: space-between;">
-            <h1 class="mb-1">
+<div class="card" style="max-width: 1200px; padding-left: 0.25rem;">
+    <!-- Title and Watchlist -->
+    <div class="d-flex justify-content-between align-items-start">
+        <h1 class="mb-1">
             {{ listing.title }}
             {% if listing.status == 1 %}
                 (Deactivated)
@@ -14,129 +14,125 @@
                     - You won this auction!
                 {% endif %}
             {% endif %}
-            </h1>
-            <form action="{% url 'watchlist' %}" method="post" style="display:inline;">
-                {% csrf_token %}
-                <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                {% if user in listing.watchers.all %}
-                    <button type="submit" class="btn btn-secondary ml-2 mt-2 mr-2">Remove from Watchlist</button>
-                {% else %}
-                    <button type="submit" class="btn btn-secondary ml-2 mt-2 mr-2">Add to Watchlist</button>
-                {% endif %}
-            </form>
-        </div>
-        <div class="d-flex mb-2 ml-2" style="gap: 0.5rem;">
-            {% if listing.status == 1 %}
-                <span class="badge bg-success text-light px-2" style="width: 80px;">Sold</span>
-            {% endif %}
+        </h1>
 
-            {% if request.user in listing.watchers.all %}
-                <span class="badge badge-secondary text-light px-2" style="width: 80px;">Watchlist</span>
-            {% endif %}
-        </div>
-
-        {% if listing.image %}
-            <img src="{{ listing.image.url }}" class="img-fluid" style="max-height:500px; object-fit:scale-down;" alt="{{ listing.title }}">
-        {% else %}
-            <img src="{% static 'auctions/default.png' %}" class="img-fluid" style="max-height:260px; object-fit:scale-down;" alt="No image">
-        {% endif %}
-        <p class="card-text">{{ listing.description|truncatewords:80 }}</p>
-
-        {% if listing.status == 0 %}
-        <p class="card-text">
-            <small class="text-muted">{{ listing.bid_count }} bid(s) so far.
-                {% if listing.highest_bid %}
-                    {% if listing.highest_bid.bidder == request.user %}
-                        Your bid is the current bid.
-                    {% else %}
-                        Your bid is not the current bid.
-                    {% endif %}
-                    {% if request.user == listing.author %}
-                        The current highest bidder is {{ listing.highest_bidder }}
-                    {% endif %}
-                {% endif %}
-            </small>
-        </p>
-
-        {% if listing.highest_bid and listing.highest_bid.price > listing.starting_bid %}
-            <p class="card-text fw-bold" style="font-size: 2rem; font-weight: bold;">${{ listing.highest_bid.price }}</p>
-        {% else %}
-            <p class="card-text fw-bold" style="font-size: 2rem; font-weight: bold;">${{ listing.starting_bid }}</p>
-        {% endif %}
-
-        <form method="POST">
+        <form action="{% url 'watchlist' %}" method="post" style="display:inline;">
             {% csrf_token %}
-
-            {% for error in form.non_field_errors %}
-                <div class="alert alert-danger">{{ error }}</div>
-            {% endfor %}
-
-            {{ form.price|as_crispy_field }}
-            <button type="submit">Place Bid</button>
+            <input type="hidden" name="listing_id" value="{{ listing.id }}">
+            {% if user in listing.watchers.all %}
+                <button type="submit" class="btn btn-secondary ml-2 mt-2 mr-2">Remove from Watchlist</button>
+            {% else %}
+                <button type="submit" class="btn btn-secondary ml-2 mt-2 mr-2">Add to Watchlist</button>
+            {% endif %}
         </form>
+    </div>
+
+    <!-- Badges -->
+    <div class="d-flex mb-2 ml-2" style="gap: 0.5rem;">
+        {% if listing.status == 1 %}
+            <span class="badge bg-success text-light px-2" style="width: 80px;">Sold</span>
         {% endif %}
-        <h2>Details</h2>
-        <ul>
-            <li>Listed by {{ listing.author }}</li>
-            <li>Category: {{ listing.category }}</li>
-            <li>Posted: {{ listing.date_posted|date:"M d, Y" }}</li>
-        </ul>
-
-        {% if listing.author == request.user %}
-        {% if listing.status == 0 %}
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#closeModal">
-            Close Listing
-        </button>
-
-        <!-- Close Modal -->
-        <div class="modal fade" id="closeModal" tabindex="-1" aria-labelledby="closeModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModalLabel">Confirm Closing</h5>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to close "{{ listing.title }}"? 
-                        {% if listing.highest_bid %}
-                            The current highest bidder is {{ listing.highest_bidder }}.
-                        {% endif %}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form action="{% url 'close_listing' listing.id %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-secondary">Yes, close</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-            Delete Listing
-        </button>
-
-        <!-- Delete Modal -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to delete "{{ listing.title }}"?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <form action="{% url 'delete_listing' listing.id %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Yes, delete</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% if request.user in listing.watchers.all %}
+            <span class="badge bg-secondary text-light px-2" style="width: 80px;">Watchlist</span>
         {% endif %}
     </div>
 
+    <!-- Image -->
+    <img src="{% if listing.image %}{{ listing.image.url }}{% else %}{% static 'auctions/default.png' %}{% endif %}"
+        class="img-fluid mb-2"
+        style="max-height:500px; object-fit:scale-down;"
+        alt="{{ listing.title|default:'No image' }}">
+
+    <!-- Description -->
+    <p class="card-text">{{ listing.description|truncatewords:80 }}</p>
+
+    <!-- Bids -->
+    {% if listing.status == 0 %}
+    <div class="d-flex align-items-center mb-3 gap-3 flex-wrap">
+        <!-- Current Price -->
+        <p class="mb-3 fw-bold mr-2" style="font-size: 2rem;">
+            ${{ listing.highest_bid.price|default:listing.starting_bid }}
+        </p>
+
+        <!-- Bid Form -->
+        <form method="POST" class="d-flex align-items-center gap-2 mb-0">
+            {% csrf_token %}
+            {{ form.price|as_crispy_field }}
+            <button type="submit" class="btn btn-primary ml-2 mb-3">Place Bid</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Details -->
+    <h2>Details</h2>
+    <ul>
+        <li>Listed by {{ listing.author }}</li>
+        <li>Category: {{ listing.category }}</li>
+        <li>Posted: {{ listing.date_posted|date:"M d, Y" }}</li>
+    </ul>
+
+    <!-- Close / Delete Buttons -->
+    {% if listing.author == request.user %}
+    <div class="d-flex gap-2 mb-2">
+        {% if listing.status == 0 %}
+        <!-- Close Listing Button -->
+        <button type="button" class="btn btn-primary cls-dlt-btn mr-1" 
+                data-bs-toggle="modal" data-bs-target="#closeModal">
+            Close Listing
+        </button>
+        {% endif %}
+
+        <!-- Delete Listing Button -->
+        <button type="button" class="btn btn-danger cls-dlt-btn mr-1" 
+                data-bs-toggle="modal" data-bs-target="#deleteModal">
+            Delete Listing
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- Close Modal -->
+    <div class="modal fade" id="closeModal" tabindex="-1" aria-labelledby="closeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="closeModalLabel">Confirm Closing</h5>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to close "{{ listing.title }}"?
+                    {% if listing.highest_bid %}
+                        The current highest bidder is {{ listing.highest_bidder }}.
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{% url 'close_listing' listing.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary cls-dlt-btn">Yes, close</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete "{{ listing.title }}"?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{% url 'delete_listing' listing.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger cls-dlt-btn">Yes, delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

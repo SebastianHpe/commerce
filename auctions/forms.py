@@ -23,6 +23,7 @@ class NewBidForm(forms.ModelForm):
     class Meta:
         model = Bid
         fields = ["price"]
+        labels = {"price": ""}
         widgets = {"price": forms.NumberInput(attrs={"placeholder": "Enter your bid"})}
 
     def __init__(self, *args, user=None, listing=None, **kwargs) -> None:

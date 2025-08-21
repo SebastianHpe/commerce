@@ -10,3 +10,8 @@ body {
     text-decoration: none;
     color: inherit;
 }
+
+.cls-dlt-btn {
+  width: 190px; /* override Bootstrap */
+  text-align: center;      /* optional, center text */
+}
