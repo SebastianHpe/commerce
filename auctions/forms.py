@@ -46,12 +46,6 @@ class NewBidForm(forms.ModelForm):
         if not self.listing:
             raise forms.ValidationError("Listing is required for validation.")
 
-        # Must be higher than starting bid
-        if price <= self.listing.starting_bid:
-            raise forms.ValidationError(
-                f"Your bid must be higher than the starting bid (${self.listing.starting_bid})."
-            )
-
         # Must also be higher than highest existing bid (if any)
         highest_bid = (
             Bid.objects.filter(listing=self.listing).order_by("-price").first()
@@ -59,6 +53,12 @@ class NewBidForm(forms.ModelForm):
         if highest_bid and price <= highest_bid.price:
             raise forms.ValidationError(
                 f"Your bid must be higher than the current highest bid (${highest_bid.price})."
+            )
+        
+        # Must be higher than starting bid
+        if price <= self.listing.starting_bid:
+            raise forms.ValidationError(
+                f"Your bid must be higher than the starting bid (${self.listing.starting_bid})."
             )
         
         if highest_bid and highest_bid.bidder == self.user:
