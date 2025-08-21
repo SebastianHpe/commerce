@@ -66,5 +66,5 @@ class NewBidForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         if self.user == self.listing.author:
-            raise forms.ValidationError("You cannot bid on your own listing.")
+            self.add_error("price", "You cannot bid on your own listing.")
         return cleaned_data
