@@ -59,8 +59,8 @@
         <!-- Bid Form -->
         <form method="POST" class="d-flex align-items-center gap-2 mb-0">
             {% csrf_token %}
-            {{ form.price|as_crispy_field }}
-            <button type="submit" class="btn btn-primary ml-2 mb-3">Place Bid</button>
+            {{ bid_form.price|as_crispy_field }}
+            <button type="submit" name="submit_bid" class="btn btn-primary ml-2 mb-3">Place Bid</button>
         </form>
     </div>
     {% endif %}
@@ -91,6 +91,27 @@
         </button>
     </div>
     {% endif %}
+
+    {% for comment in comments %}
+    <div class="card mb-2 shadow-sm {% if comment.author == request.user %}bg-light{% endif %}" style="width: 1000px;">
+        <div class="card-body p-2">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+            <!-- Author -->
+            <h6 class="card-subtitle mb-0 fw-bold">{{ comment.author }}</h6>
+            <!-- Date -->
+            <small class="text-muted">{{ comment.date_posted|date:"M d, Y H:i" }}</small>
+            </div>
+            <!-- Content -->
+            <p class="card-text mb-0">{{ comment.content }}</p>
+        </div>
+    </div>
+    {% endfor %}
+
+    <form method="POST" class="d-flex flex-column gap-2 mb-3" style="width: 1000px;">
+        {% csrf_token %}
+        {{ comment_form|crispy }}
+        <button type="submit" name="submit_comment" class="btn btn-secondary mb-1">Comment</button>
+    </form>
 
     <!-- Close Modal -->
     <div class="modal fade" id="closeModal" tabindex="-1" aria-labelledby="closeModalLabel" aria-hidden="true">

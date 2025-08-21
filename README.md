@@ -7,4 +7,4 @@ Features include:
 - Close listings 
 - Create a watchlist with favorite listings
 - Filter listings by categories
-- Add comments to listings (WIP)
+- Add comments to listings

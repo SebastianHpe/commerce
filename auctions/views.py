@@ -6,8 +6,8 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from .forms import NewListingForm, NewBidForm
-from .models import User, Listing, Category
+from .forms import NewListingForm, NewBidForm, NewCommentForm
+from .models import User, Listing, Category, Comment
 
 
 def index(request):
@@ -149,25 +149,40 @@ def create(request):
 @login_required
 def listing_detail(request, id):
     listing = get_object_or_404(Listing, id=id)
+    comments = Comment.objects.filter(listing=listing).order_by("-date_posted")
 
     if request.method == "POST":
-        form = NewBidForm(request.POST, user=request.user, listing=listing)
-        if form.is_valid():
-            new_bid = form.save(commit=False)
-            new_bid.bidder = request.user
-            new_bid.listing = listing
-            new_bid.save()
-            messages.success(request, "Bid successful!")
-            return HttpResponseRedirect(reverse("listing_detail", args=[id]))
+        if "submit_bid" in request.POST: 
+            bid_form = NewBidForm(request.POST, user=request.user, listing=listing)
+            if bid_form.is_valid():
+                new_bid = bid_form.save(commit=False)
+                new_bid.bidder = request.user
+                new_bid.listing = listing
+                new_bid.save()
+                messages.success(request, "Bid successful!")     
+            
+        elif "submit_comment" in request.POST:
+            comment_form = NewCommentForm(request.POST)
+            if comment_form.is_valid():
+                new_comment = comment_form.save(commit=False)
+                new_comment.author = request.user
+                new_comment.listing = listing
+                new_comment.save()
+                messages.success(request, "Comment added.")
+        return HttpResponseRedirect(reverse("listing_detail", args=[id]))
+    
     else:
-        form = NewBidForm(user=request.user, listing=listing)
+        bid_form = NewBidForm(user=request.user, listing=listing)
+        comment_form = NewCommentForm()
 
     return render(
         request,
         "auctions/detail.html",
         {
-            "form": form,
+            "bid_form": bid_form,
+            "comment_form": comment_form,
             "listing": listing,
+            "comments": comments,
         },
     )
 

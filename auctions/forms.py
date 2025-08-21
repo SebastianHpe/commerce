@@ -1,8 +1,8 @@
 from django import forms
-from .models import Listing, Bid
+from .models import Listing, Bid, Comment
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Submit
+from crispy_forms.layout import Layout, Field, Submit, Div
 
 
 class NewListingForm(forms.ModelForm):
@@ -68,3 +68,20 @@ class NewBidForm(forms.ModelForm):
         if self.user == self.listing.author:
             self.add_error("price", "You cannot bid on your own listing.")
         return cleaned_data
+
+class NewCommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["content"]
+        labels = {"content": ""}
+
+        widgets = {
+            "content": forms.Textarea(
+                attrs={
+                    "rows": 5,
+                    "placeholder": "Add Comment...",
+                    "class": "form-control",
+                    "style": "max-width: 1000px",
+                }
+            )
+        }
