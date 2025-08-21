@@ -60,6 +60,9 @@ class NewBidForm(forms.ModelForm):
             raise forms.ValidationError(
                 f"Your bid must be higher than the current highest bid (${highest_bid.price})."
             )
+        
+        if highest_bid and highest_bid.bidder == self.user:
+            raise forms.ValidationError("Your bid is already the highest bid!")
 
         return price
 
