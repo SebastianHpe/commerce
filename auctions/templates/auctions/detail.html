@@ -28,13 +28,15 @@
     </div>
 
     <!-- Badges -->
-    <div class="d-flex mb-2 ml-2" style="gap: 0.5rem;">
-        {% if listing.status == 1 %}
-            <span class="badge bg-success text-light px-2" style="width: 80px;">Sold</span>
-        {% endif %}
-        {% if request.user in listing.watchers.all %}
-            <span class="badge bg-secondary text-light px-2" style="width: 80px;">Watchlist</span>
-        {% endif %}
+    <div class="d-flex mb-1 mt-1 ml-1" style="height: 30px; align-items: center; gap: 0.5rem;">
+        <div class="d-flex mb-2 ml-1" style="gap: 0.5rem;">
+            {% if listing.status == 1 %}
+                <span class="badge bg-success text-light px-2" style="width: 80px;">Sold</span>
+            {% endif %}
+            {% if request.user in listing.watchers.all %}
+                <span class="badge bg-secondary text-light px-2" style="width: 80px;">Watchlist</span>
+            {% endif %}
+        </div>
     </div>
 
     <!-- Image -->
