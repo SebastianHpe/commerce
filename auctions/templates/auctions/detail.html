@@ -5,7 +5,8 @@
 
 {% block body %}
     <div class="card" style="max-width: 1200px;">
-        <h1 class="mb-0">
+        <div style="display: flex; justify-content: space-between;">
+            <h1 class="mb-1">
             {{ listing.title }}
             {% if listing.status == 1 %}
                 (Deactivated)
@@ -13,13 +14,26 @@
                     - You won this auction!
                 {% endif %}
             {% endif %}
-        </h1>
-
-        {% if listing.status == 1 %}
-        <div>
-            <span class="badge bg-success text-light d-inline-block ml-2" style="width: 80px;">Sold</span>
+            </h1>
+            <form action="{% url 'watchlist' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                {% if user in listing.watchers.all %}
+                    <button type="submit" class="btn btn-secondary ml-2 mt-2 mr-2">Remove from Watchlist</button>
+                {% else %}
+                    <button type="submit" class="btn btn-secondary ml-2 mt-2 mr-2">Add to Watchlist</button>
+                {% endif %}
+            </form>
         </div>
-        {% endif %}
+        <div class="d-flex mb-2 ml-2" style="gap: 0.5rem;">
+            {% if listing.status == 1 %}
+                <span class="badge bg-success text-light px-2" style="width: 80px;">Sold</span>
+            {% endif %}
+
+            {% if request.user in listing.watchers.all %}
+                <span class="badge badge-secondary text-light px-2" style="width: 80px;">Watchlist</span>
+            {% endif %}
+        </div>
 
         {% if listing.image %}
             <img src="{{ listing.image.url }}" class="img-fluid" style="max-height:500px; object-fit:scale-down;" alt="{{ listing.title }}">

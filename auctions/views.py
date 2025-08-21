@@ -108,7 +108,25 @@ def list_categories(request):
 
 @login_required
 def watchlist(request):
-    return render(request, "auctions/watchlist.html")
+    user = request.user
+
+    if request.method == "POST":
+        listing_id = request.POST.get("listing_id")
+        listing = get_object_or_404(Listing, id=listing_id)
+
+        if user in listing.watchers.all():
+            messages.info(request, f"Removed {listing.title} from Watchlist!")
+            listing.watchers.remove(user)
+        else:
+            messages.success(request, f"Added {listing.title} to Watchlist!")
+            listing.watchers.add(user)
+
+        return redirect("listing_detail", id=listing.id)
+    
+    return render(request, "auctions/watchlist.html", {
+        "listings": user.watchlist.all(),
+        "title": "My Watchlist",
+        })
 
 
 @login_required

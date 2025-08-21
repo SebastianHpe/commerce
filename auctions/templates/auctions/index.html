@@ -10,12 +10,17 @@
                     <!-- Image column -->
                     <div style="flex:0 0 260px;" class="d-flex flex-column align-items-start border-end">
                         <!-- Badge container with fixed height -->
-                        <div style="height: 30px;">
+                        <div class="d-flex mb-1 mt-1 ml-1" style="height: 30px; align-items: center; gap: 0.5rem;">
                             {% if listing.status == 1 %}
-                                <span class="badge bg-success text-light d-inline-block px-3 ml-1">Sold</span>
+                                <span class="badge bg-success text-light d-flex justify-content-center align-items-center" 
+                                    style="width: 80px; height: 18px; line-height: 1;">Sold</span>
+                            {% endif %}
+
+                            {% if request.user in listing.watchers.all %}
+                                <span class="badge bg-secondary text-light d-flex justify-content-center align-items-center" 
+                                    style="width: 80px; height: 18px; line-height: 1;">Watchlist</span>
                             {% endif %}
                         </div>
-
                         <!-- Image -->
                         {% if listing.image %}
                             <img src="{{ listing.image.url }}" class="img-fluid" 

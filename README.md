@@ -5,6 +5,6 @@ Features include:
 - Create new listings
 - Bid on listings and see the current highest bid
 - Close listings 
-- Create a watchlist with favorite listings (WIP) 
+- Create a watchlist with favorite listings
 - Filter listings by categories
 - Add comments to listings (WIP)

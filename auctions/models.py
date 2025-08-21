@@ -30,7 +30,8 @@ class Listing(models.Model):
         default=Status.ACTIVE,
     )
     winner = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="listings_won")
-
+    watchers = models.ManyToManyField(User, related_name="watchlist", blank=True)
+    
     def __str__(self):
         return self.title
 
@@ -65,8 +66,3 @@ class Bid(models.Model):
 
     def __str__(self):
         return f"#{self.id}: ${self.price} for '{self.listing}' by {self.bidder}"
-
-
-class Watchlist(models.Model):
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)

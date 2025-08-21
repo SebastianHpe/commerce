@@ -1,7 +1,54 @@
 {% extends "auctions/layout.html" %}
+{% load static %}
 
 {% block body %}
-    <h2>Watchlist</h2>
+    <h2>My Watchlist</h2>
 
-    TODO
+        {% for listing in listings %}
+            <div class="card mb-4" style="max-width: 1200px;">
+                <div class="d-flex" style="height:260px;">
+                    <!-- Image column -->
+                    <div style="flex:0 0 260px;" class="d-flex flex-column align-items-start border-end">
+                        <!-- Badge container with fixed height -->
+                        <div style="height: 30px;">
+                            {% if listing.status == 1 %}
+                                <span class="badge bg-success text-light d-inline-block px-3 ml-1">Sold</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Image -->
+                        {% if listing.image %}
+                            <img src="{{ listing.image.url }}" class="img-fluid" 
+                                style="max-height:230px; object-fit:contain;" alt="{{ listing.title }}">
+                        {% else %}
+                            <img src="{% static 'auctions/default.png' %}" class="img-fluid" 
+                                style="max-height:230px; object-fit:contain;" alt="No image">
+                        {% endif %}
+                    </div>
+
+                    <!-- Text column -->
+                    <div class="flex-grow-1">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url 'listing_detail' listing.id %}" class="link-no-style">{{ listing.title }}</a>
+                            </h5>
+                            {% if listing.highest_bid and listing.highest_bid.price > listing.starting_bid %}
+                                <p class="card-text text-success fw-bold" style="font-size: 1.5rem;">${{ listing.highest_bid.price }}</p>
+                            {% else %}
+                                <p class="card-text text-success fw-bold" style="font-size: 1.5rem;">${{ listing.starting_bid }}</p>
+                            {% endif %}
+                            <p class="card-text">Category: {{ listing.category }}</p>
+                            <p class="card-text">Seller: {{ listing.author }}</p>
+                            <p class="card-text">
+                                <small class="text-muted">Posted: {{ listing.date_posted|date:"M d, Y" }}</small>
+                            </p>
+                            <p class="card-text">{{ listing.description|truncatewords:80 }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No listings available.</p>
+        {% endfor %}
+
 {% endblock %}
